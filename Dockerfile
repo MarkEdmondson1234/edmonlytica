@@ -1,6 +1,8 @@
 FROM rocker/shiny-verse
 
-RUN apt-get install gcc-7 g++-7 gfortran-7
+RUN apt-get update && apt-get install -y \
+  build-essential \
+  libglpk40
 
 RUN install2.r -e \
   bigQueryR highcharter xts forecast shinythemes DT
