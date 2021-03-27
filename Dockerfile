@@ -2,7 +2,7 @@ FROM rocker/shiny-verse
 
 RUN apt-get update && apt-get install -y \
   build-essential \
-  libglpk40
+  libglpk40 # https://github.com/malcolmbarrett/ggdag/issues/47
 
 RUN install2.r -e \
   bigQueryR highcharter xts forecast shinythemes DT

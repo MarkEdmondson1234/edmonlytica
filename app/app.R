@@ -7,6 +7,9 @@ library(dplyr)
 library(shinythemes)
 library(DT)
 
+bqr_global_project("mark-edmondson-gde")
+bqr_global_dataset("edmonlytica")
+
 realtime_q <- 'SELECT * EXCEPT(ts), 
     ts AS timestamp FROM `edmonlytica.code_markedmondson_me` 
     ORDER BY ts DESC'
@@ -45,14 +48,18 @@ do_bq <- function(q, limit=10000, cache = TRUE){
     q <- paste(q, " LIMIT ", limit)
     
     if(!googleAuthR::gar_has_token()){
+        message("Authentication on GCP")
+        options(googleAuthR.verbose = 2)
         # auth on Cloud Run
-        googleAuthR::gar_gce_auth()
+        token <- googleAuthR::gar_gce_auth()
+        if(is.null(token)){
+          stop("Auth failed")
+        }
     }
     
     if(!cache) googleAuthR::gar_cache_empty()
     
-    o <- bqr_query(projectId = Sys.getenv("BQ_DEFAULT_PROJECT_ID"), 
-              datasetId = "edmonlytica", 
+    o <- bqr_query(
               query = q, 
               useQueryCache = cache,
               useLegacySql = FALSE) 
@@ -96,7 +103,8 @@ bq_daterange <- function(q, start, end){
 }
 
 ui <- fluidPage(theme = shinytheme("sandstone"),
-    titlePanel(title=div(img(src="green-hand-small.png", width = 30), "Edmonlytica")),
+    titlePanel(title=div(img(src="green-hand-small.png", width = 30), "Edmonlytica"),
+               windowTitle = "Edmonlytica"),
     sidebarLayout(
       sidebarPanel(
         dateRangeInput("dates", "Date Range", 
