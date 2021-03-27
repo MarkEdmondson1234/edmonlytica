@@ -1,5 +1,7 @@
 FROM rocker/shiny-verse
 
+RUN apt-get install gcc-7 g++-7 gfortran-7
+
 RUN install2.r -e \
   bigQueryR highcharter xts forecast shinythemes DT
   
