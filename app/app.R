@@ -51,7 +51,7 @@ do_bq <- function(q, limit=10000, cache = TRUE){
     
     if(!cache) googleAuthR::gar_cache_empty()
     
-    o <- bqr_query(projectId = Sys.getenv("PROJECT_ID"), 
+    o <- bqr_query(projectId = Sys.getenv("BQ_DEFAULT_PROJECT_ID"), 
               datasetId = "edmonlytica", 
               query = q, 
               useQueryCache = cache,
